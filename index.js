@@ -24,7 +24,7 @@ app.use(cors({
 app.use(express.json());
 
 // Routes
-app.get("/", (req, res) => res.send("Express on Vercel"));
+// app.get("/", (req, res) => res.send("Express on Vercel"));
 // Debug middleware
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`, {
