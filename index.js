@@ -40,7 +40,7 @@ console.log('Static files path:', staticPath);
 app.use(express.static(staticPath));
 
 // Catch all handler: send back React's index.html file for any non-API routes
-app.get('*', (req, res) => {
+app.get('/.*/', (req, res) => {
   console.log('Catch-all route hit for path:', req.path);
   
   if (req.path.startsWith('/api/')) {
