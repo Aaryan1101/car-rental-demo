@@ -23,14 +23,9 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Routes
-app.get("/", (req, res) => res.send("Express on Vercel"));
 // Debug middleware
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`, {
-    headers: req.headers,
-    body: req.body
-  });
+  console.log(`${req.method} ${req.url}`);
   next();
 });
 
@@ -39,27 +34,36 @@ app.use("/api/user", userRouter);
 app.use("/api/owner", ownerRouter);
 app.use("/api/bookings", bookingRouter);
 
-// Use the client app
-app.use(express.static(path.join(__dirname,"/client/dist")))
+// Serve static files from React build
+const staticPath = path.join(__dirname, "Client", "dist");
+console.log('Static files path:', staticPath);
+app.use(express.static(staticPath));
 
-// Render client for any other route - Using regex pattern for compatibility
-app.get(/.*/, (req, res) => res.sendFile(path.join(__dirname, '/client/dist/index.html')));
-
-// Error logging for undefined routes
-app.use((req, res) => {
-  console.log('404 - Route not found:', req.method, req.url);
-  res.status(404).json({ message: 'Route not found' });
+// Catch all handler: send back React's index.html file for any non-API routes
+app.get('*', (req, res) => {
+  console.log('Catch-all route hit for path:', req.path);
+  
+  if (req.path.startsWith('/api/')) {
+    console.log('Returning 404 for API route:', req.path);
+    return res.status(404).json({ message: 'API route not found' });
+  }
+  
+  const indexPath = path.join(__dirname, "Client", "dist", "index.html");
+  console.log('Serving index.html from:', indexPath);
+  res.sendFile(indexPath);
 });
 
 // Connect DB and then start server
 const startServer = async () => {
     try {
         await connectDB();
-        const PORT = process.env.PORT || 3000;
-        app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+        const PORT = process.env.PORT || 10000;
+        app.listen(PORT, '0.0.0.0', () => {
+            console.log(`Server running on host 0.0.0.0 port ${PORT}`);
+        });
     } catch (error) {
         console.error("Failed to connect to the database:", error.message);
-        process.exit(1); // Exit the process with an error code
+        process.exit(1);
     }
 }
 
