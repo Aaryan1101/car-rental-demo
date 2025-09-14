@@ -51,8 +51,18 @@ app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// Connect DB (only once)
-connectDB()
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-export default app
+// Connect DB and then start server
+const startServer = async () => {
+    try {
+        await connectDB();
+        const PORT = process.env.PORT || 3000;
+        app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    } catch (error) {
+        console.error("Failed to connect to the database:", error.message);
+        process.exit(1); // Exit the process with an error code
+    }
+}
+
+startServer();
+
+export default app;
