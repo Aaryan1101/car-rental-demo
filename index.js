@@ -43,7 +43,7 @@ app.use("/api/bookings", bookingRouter);
 app.use(express.static(path.join(__dirname,"/client/dist")))
 
 // Render client for any other route;
-app.get('/*', (req, res) => res.sendFile(path.join(__dirname, '/client/dist/index.html')));
+app.get('/(.*)', (req, res) => res.sendFile(path.join(__dirname, '/client/dist/index.html')));
 
 // Error logging for undefined routes
 app.use((req, res) => {
