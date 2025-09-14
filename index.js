@@ -40,10 +40,10 @@ app.use("/api/owner", ownerRouter);
 app.use("/api/bookings", bookingRouter);
 
 // Use the client app
-app.use(express.static(path.join(__dirname,"/Client/dist")))
+app.use(express.static(path.join(__dirname,"/client/dist")))
 
 // Render client for any other route - Using regex pattern for compatibility
-app.get(/.*/, (req, res) => res.sendFile(path.join(__dirname, '/Client/dist/index.html')));
+app.get(/.*/, (req, res) => res.sendFile(path.join(__dirname, '/client/dist/index.html')));
 
 // Error logging for undefined routes
 app.use((req, res) => {
